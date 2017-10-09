@@ -14,6 +14,7 @@ import { HttpModule } from '@angular/http';
 import { AppConfig }  from '../configure/config';
 
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+import { NativeStorage } from 'ionic-native'
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -46,6 +47,7 @@ const cloudSettings: CloudSettings = {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthProvider,
+    NativeStorage, 
     AppConfig,
   ]
 })
