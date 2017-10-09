@@ -105,7 +105,7 @@ export class AuthProvider {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         return new Promise(resolve => {
-            this.http.post(this.config.backServerHost + '/auth/register',
+            this.http.post(this.config.backServerHost + '/auth/local/register',
                 creds, {headers: headers}).subscribe(data => {
                 if(data.json().success){
                     resolve(true);

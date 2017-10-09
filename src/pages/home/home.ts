@@ -32,13 +32,13 @@ export class HomePage {
   login(user:UserAuth){
     this.authservice.authenticate(user).then(data => {
       if (data) {
-        const alert = this.alertCtrl.create({
-          title: 'Log-in Successfully',
-          subTitle: 'Welcome !!',
-          buttons: ['OK']
-        });
-        alert.present();
-        this.nav.setRoot(UserPage)
+        // const alert = this.alertCtrl.create({
+        //   title: 'Log-in Successfully',
+        //   subTitle: 'Welcome !!',
+        //   buttons: ['OK']
+        // });
+        // alert.present();
+        this.nav.push(UserPage)
       } else {
         const alert = this.alertCtrl.create({
           title: 'Log-in Failed',
