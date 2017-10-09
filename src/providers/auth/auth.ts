@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import { Platform } from 'ionic-angular'
 import { NativeStorage } from 'ionic-native'
 import * as jwt from 'jwt-simple';
 import 'rxjs/add/operator/map';
@@ -23,7 +24,9 @@ export class AuthProvider {
   AuthToken: string;
   config: AppConfig;
 
-  constructor(public http: Http, Config: AppConfig) {
+  constructor(public http: Http,
+              public Config: AppConfig,
+              public platform:Platform) {
     console.log('Hello AuthProvider Provider');
     this.http = http;
     this.AuthToken = null
@@ -31,8 +34,11 @@ export class AuthProvider {
   }
 
   storeUserCredentials(token):void  {
-    window.localStorage.setItem('auth', token);
-    NativeStorage.setItem('auth', token);
+    if (this.platform.is('cordova')) {
+      NativeStorage.setItem('auth', token)
+    } else {
+      window.localStorage.setItem('auth', token);
+    }
     this.useCredentials(token);
   }
 
@@ -41,13 +47,14 @@ export class AuthProvider {
   }
 
   loadUserCredentials():string {
-    var token = window.localStorage.getItem('auth');
-    if (!token) {
+    var token: string
+    if (this.platform.is('cordova')) {
       NativeStorage.getItem('auth').then(data => {
-       token = data;
+          token = data;
       });
+    } else {
+      token = window.localStorage.getItem('auth');
     }
-
     this.useCredentials(token);
     return token;
   }
@@ -72,6 +79,7 @@ export class AuthProvider {
         var headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
+        console.log(this.config.backServerHost)
         return new Promise(resolve => {
             this.http.post(this.config.backServerHost + '/auth/local',
             creds, {headers: headers}).subscribe(data => {
