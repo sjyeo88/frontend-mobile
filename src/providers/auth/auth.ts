@@ -64,7 +64,7 @@ export class AuthProvider {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         return new Promise(resolve => {
-            this.http.post('http://192.168.1.3:8080/auth/local',
+            this.http.post(this.config.backServerHost + '/auth/local',
             creds, {headers: headers}).subscribe(data => {
                 console.log(data.json());
                 if(data.json().success){
@@ -87,8 +87,7 @@ export class AuthProvider {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         return new Promise(resolve => {
-            this.http.post(
-                'http://192.168.1.3:8080/auth/local/register',
+            this.http.post(this.config.backServerHost + '/auth/local',
                 creds, {headers: headers}).subscribe(data => {
                 if(data.json().success){
                     resolve(true);
