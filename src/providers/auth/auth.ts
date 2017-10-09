@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
+import { NativeStorage } from 'ionic-native'
 import * as jwt from 'jwt-simple';
 import 'rxjs/add/operator/map';
 
@@ -31,6 +32,7 @@ export class AuthProvider {
 
   storeUserCredentials(token):void  {
     window.localStorage.setItem('auth', token);
+    NativeStorage.setItem('auth', token);
     this.useCredentials(token);
   }
 
@@ -40,12 +42,19 @@ export class AuthProvider {
 
   loadUserCredentials():string {
     var token = window.localStorage.getItem('auth');
+    if (!token) {
+      NativeStorage.getItem('auth').then(data => {
+       token = data;
+      });
+    }
+
     this.useCredentials(token);
     return token;
   }
 
   destroyUserCredentials():void {
     this.AuthToken = null;
+    NativeStorage.clear();
     window.localStorage.clear();
   }
 

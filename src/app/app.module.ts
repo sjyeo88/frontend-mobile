@@ -13,6 +13,13 @@ import { AuthProvider } from '../providers/auth/auth';
 import { HttpModule } from '@angular/http';
 import { AppConfig }  from '../configure/config';
 
+import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+
+const cloudSettings: CloudSettings = {
+  'core': {
+    'app_id': '624fd13'
+  }
+};
 
 @NgModule({
   declarations: [
@@ -24,6 +31,7 @@ import { AppConfig }  from '../configure/config';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    CloudModule.forRoot(cloudSettings),
     HttpModule,
   ],
   bootstrap: [IonicApp],
