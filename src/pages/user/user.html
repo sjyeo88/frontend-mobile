@@ -1,0 +1,27 @@
+<!--
+  Generated template for the UserPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Welcome {{user.name}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <h5>Primary Key : {{user.PK}}</h5>
+  <h5>Authentication ID : {{user.authId}}</h5>
+  <h5>E-Mail : {{user.email}}</h5>
+  <h5>Sex : {{user.sex}}</h5>
+  <h5>Birth : {{user.birth}}</h5>
+  <h5>Age : {{user.age}}</h5>
+  <h5>Date : {{user.date}}</h5>
+  <h5>Name : {{user.name}}</h5>
+  <button ion-button (click)="logout(user)">Log Out</button>
+  <button ion-button (click)="getInfo(user)">Get Information</button>
+</ion-content>
