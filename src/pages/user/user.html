@@ -15,14 +15,14 @@
 
 
 <ion-content padding>
-  <h5>Primary Key : {{this.authservice.userData.PK}}</h5>
-  <h5>Authentication ID : {{this.authservice.userData.authId}}</h5>
-  <h5>E-Mail : {{this.authservice.userData.email}}</h5>
-  <h5>Sex : {{this.authservice.userData.sex}}</h5>
-  <h5>Birth : {{this.authservice.userData.birth}}</h5>
-  <h5>Age : {{this.authservice.userData.age}}</h5>
-  <h5>Date : {{this.authservice.userData.date}}</h5>
-  <h5>Name : {{this.authservice.userData.name}}</h5>
-  <button ion-button (click)="logout(user)">Log Out</button>
+  <h5>Primary Key : {{user.PK}}</h5>
+  <h5>Authentication ID : {{user.authId}}</h5>
+  <h5>E-Mail : {{user.email}}</h5>
+  <h5>Sex : {{user.sex}}</h5>
+  <h5>Birth : {{user.birth}}</h5>
+  <h5>Age : {{user.age}}</h5>
+  <h5>Date : {{user.date}}</h5>
+  <h5>Name : {{user.name}}</h5>
+  <button ion-button (click)="logout()">Log Out</button>
   <button ion-button (click)="getInfo(user)">Get Information</button>
 </ion-content>

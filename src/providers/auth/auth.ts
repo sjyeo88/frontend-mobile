@@ -22,15 +22,15 @@ import { UserData, UserAuth, UserReg }  from '../../interfaces/UserData.interfac
 export class AuthProvider {
 
   AuthToken: string;
-  userData: UserData;
+  authedUser: UserData;
   config: AppConfig;
-  loggedIn:boolean = false
 
   constructor(public http: Http,
               public Config: AppConfig,
               public storage: NativeStorage,
               public platform:Platform) {
-    console.log('Hello AuthProvider Provider');
+
+    console.log('Hello AuthProvider');
     this.http = http;
     this.AuthToken = null
     this.config = Config
@@ -49,7 +49,6 @@ export class AuthProvider {
 
   useCredentials(token):void {
     this.AuthToken = token;
-    this.loggedIn = true;
   }
 
 
@@ -59,11 +58,11 @@ export class AuthProvider {
       if (!this.platform.is('cordova')) {
         this.AuthToken = window.localStorage.getItem('auth');
         if(this.AuthToken) {
-          this.userData =  jwt.decode(this.AuthToken, this.config.password)
+          this.authedUser =  jwt.decode(this.AuthToken, this.config.password)
+          resolve(true)
         } else {
           resolve(false)
         }
-        resolve(true)
       } else {
         this.storage.getItem('auth')
         .then(
@@ -72,7 +71,7 @@ export class AuthProvider {
         )
         .then(() => {
         if(this.AuthToken) {
-            this.userData =  jwt.decode(this.AuthToken, this.config.password)
+            this.authedUser =  jwt.decode(this.AuthToken, this.config.password)
           }
           resolve(true)
         })
@@ -82,7 +81,6 @@ export class AuthProvider {
 
   destroyUserCredentials():void {
     this.AuthToken = null;
-    this.loggedIn = false;
     this.storage.clear();
     window.localStorage.clear();
   }
@@ -91,12 +89,8 @@ export class AuthProvider {
     return new Promise(resolve => {
       this.loadUserCredentials().then(chk => {
         if(chk) {
-          console.log("logged in")
-          this.loggedIn = true;
           resolve(chk)
         } else {
-          console.log("Not logged in")
-          this.loggedIn = false;
           resolve(chk)
         }
       })

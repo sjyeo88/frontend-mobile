@@ -21,7 +21,7 @@ import { UserData }  from '../../interfaces/UserData.interface';
 
 export class UserPage {
 
-  user:UserData
+  user:UserData = this.authservice.authedUser
 
   constructor(public nav: NavController,
               public navParams: NavParams,
@@ -43,7 +43,7 @@ export class UserPage {
 
   getInfo() {
      this.authservice.loadUserCredentials().then(() => {
-       this.user = this.authservice.userData
+       this.user = this.authservice.authedUser
      })
   }
   testPromise(){
