@@ -27,9 +27,7 @@ export class UserPage {
               public navParams: NavParams,
               public authservice: AuthProvider,
              )
-  {
-    this.getInfo()
-  }
+  {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad UserPage');
@@ -39,14 +37,5 @@ export class UserPage {
   logout(): void {
     this.authservice.logout();
     this.nav.setRoot(HomePage);
-  }
-
-  getInfo() {
-     this.authservice.loadUserCredentials().then(() => {
-       this.user = this.authservice.authedUser
-     })
-  }
-  testPromise(){
-      console.log(this.authservice.loadUserCredentials())
   }
 }

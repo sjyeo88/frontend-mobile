@@ -58,16 +58,4 @@ export class HomePage {
   signup(){
     this.nav.push(SignUpPage);
   }
-  userPage(){
-    this.nav.push(UserPage);
-  }
-  chkLocalStrage(){
-    if(this.platform.is('cordova')) {
-      this.authservice.storage.getItem('auth').then(data => {
-        this.localData = data
-      })
-    } else {
-      this.localData = window.localStorage.getItem('auth');
-    }
-  }
 }
