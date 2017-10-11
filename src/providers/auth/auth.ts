@@ -110,7 +110,7 @@ export class AuthProvider {
             else {
               apiUrl = '/auth/local'
             }
-              this.http.post(apiUrl,
+            this.http.post(apiUrl,
             creds, {headers: headers}).subscribe(data => {
                 console.log(data.json());
                 if(data.json().success){
@@ -134,10 +134,10 @@ export class AuthProvider {
 
         return new Promise(resolve => {
             if(this.platform.is('cordova')) {
-              apiUrl = this.config.backServerHost + '/auth/register'
+              apiUrl = this.config.backServerHost + '/auth/local/register'
             }
             else {
-              apiUrl = '/auth/register'
+              apiUrl = '/auth/local/register'
             }
             this.http.post(apiUrl,
                 creds, {headers: headers}).subscribe(data => {
