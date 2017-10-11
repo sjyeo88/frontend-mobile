@@ -26,8 +26,7 @@ export class UserPage {
   constructor(public nav: NavController,
               public navParams: NavParams,
               public authservice: AuthProvider,
-             )
-  {}
+             ) {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad UserPage');
