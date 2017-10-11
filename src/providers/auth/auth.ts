@@ -58,7 +58,11 @@ export class AuthProvider {
     return new Promise(resolve => {
       if (!this.platform.is('cordova')) {
         this.AuthToken = window.localStorage.getItem('auth');
-        this.userData =  jwt.decode(this.AuthToken, this.config.password)
+        if(this.AuthToken) {
+          this.userData =  jwt.decode(this.AuthToken, this.config.password)
+        } else {
+          resolve(false)
+        }
         resolve(true)
       } else {
         this.storage.getItem('auth')
@@ -67,7 +71,9 @@ export class AuthProvider {
           error => { resolve(false) }
         )
         .then(() => {
-          this.userData =  jwt.decode(this.AuthToken, this.config.password)
+        if(this.AuthToken) {
+            this.userData =  jwt.decode(this.AuthToken, this.config.password)
+          }
           resolve(true)
         })
       }
@@ -85,9 +91,13 @@ export class AuthProvider {
     return new Promise(resolve => {
       this.loadUserCredentials().then(chk => {
         if(chk) {
+          console.log("logged in")
           this.loggedIn = true;
+          resolve(chk)
         } else {
+          console.log("Not logged in")
           this.loggedIn = false;
+          resolve(chk)
         }
       })
     })
@@ -96,11 +106,17 @@ export class AuthProvider {
   authenticate(user:UserAuth): Promise<boolean> {
         var creds = "email=" + user.email+ "&password=" + user.password;
         var headers = new Headers();
+        let apiUrl:string
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
-        console.log(this.config.backServerHost)
         return new Promise(resolve => {
-            this.http.post('/auth/local',
+            if(this.platform.is('cordova')) {
+              apiUrl = this.config.backServerHost + '/auth/local'
+            }
+            else {
+              apiUrl = '/auth/local'
+            }
+              this.http.post(apiUrl,
             creds, {headers: headers}).subscribe(data => {
                 console.log(data.json());
                 if(data.json().success){
@@ -115,14 +131,21 @@ export class AuthProvider {
   }
 
   adduser(user:UserReg): Promise<boolean> {
-        var creds = "email=" + user.email+
+        let apiUrl:string;
+        let creds:string = "email=" + user.email+
                     "&password=" + user.password+
                     "&name=" + user.name;
-        var headers = new Headers();
+        let headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         return new Promise(resolve => {
-            this.http.post('/auth/local/register',
+            if(this.platform.is('cordova')) {
+              apiUrl = this.config.backServerHost + '/auth/register'
+            }
+            else {
+              apiUrl = '/auth/register'
+            }
+            this.http.post(apiUrl,
                 creds, {headers: headers}).subscribe(data => {
                 if(data.json().success){
                     resolve(true);

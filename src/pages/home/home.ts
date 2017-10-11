@@ -3,6 +3,7 @@ import { NavController, AlertController } from 'ionic-angular';
 import { AuthProvider } from '../../providers/auth/auth';
 import { UserPage } from '../user/user';
 import { SignUpPage} from '../sign-up/sign-up';
+import { Platform } from 'ionic-angular'
 
 // Interface import
 import { UserAuth }  from '../../interfaces/UserData.interface';
@@ -15,9 +16,11 @@ import { UserAuth }  from '../../interfaces/UserData.interface';
 export class HomePage {
 
   user:UserAuth;
+  localData;
   constructor(public nav: NavController,
               public authservice: AuthProvider,
-              public alertCtrl:AlertController) {
+              public alertCtrl: AlertController,
+              public platform: Platform) {
 
   this.authservice.chkLoggedIn().then(chk => {
     if(chk) { this.nav.setRoot(UserPage) }
@@ -58,9 +61,13 @@ export class HomePage {
   userPage(){
     this.nav.push(UserPage);
   }
-  // getInfo(){
-  //   this.authservice.loadUserCredentials().then(result => {
-  //     console.log(this.authservice.userData)
-  //   })
-  // }
+  chkLocalStrage(){
+    if(this.platform.is('cordova')) {
+      this.authservice.storage.getItem('auth').then(data => {
+        this.localData = data
+      })
+    } else {
+      this.localData = window.localStorage.getItem('auth');
+    }
+  }
 }
