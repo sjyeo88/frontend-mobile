@@ -42,7 +42,7 @@ export class SignUpPage {
             buttons: ['OK']
           });
           alert.present();
-          this.nav.push(HomePage);
+          this.nav.push(HomePage)
       } else {
           const alert = this.alertCtrl.create({
             title: 'Register Fail',

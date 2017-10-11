@@ -22,7 +22,9 @@ import { UserData, UserAuth, UserReg }  from '../../interfaces/UserData.interfac
 export class AuthProvider {
 
   AuthToken: string;
+  userData: UserData;
   config: AppConfig;
+  loggedIn:boolean = false
 
   constructor(public http: Http,
               public Config: AppConfig,
@@ -37,42 +39,58 @@ export class AuthProvider {
   storeUserCredentials(token):void  {
     if (!this.platform.is('cordova')) {
       window.localStorage.setItem('auth', token);
+      this.useCredentials(token);
     } else {
-      this.storage.setItem('auth', token)
+      this.storage.setItem('auth', token).then(data => {
+        this.useCredentials(data);
+      });
     }
-    this.useCredentials(token);
   }
 
   useCredentials(token):void {
     this.AuthToken = token;
+    this.loggedIn = true;
   }
 
-  loadUserCredentials():string {
-    var token: string
-    if (!this.platform.is('cordova')) {
-      token = window.localStorage.getItem('auth');
-    } else {
-      this.storage.getItem('auth').then(data => {
-          token = data;
-      });
-    }
-    this.useCredentials(token);
-    return token;
+
+
+  loadUserCredentials() {
+    return new Promise(resolve => {
+      if (!this.platform.is('cordova')) {
+        this.AuthToken = window.localStorage.getItem('auth');
+        this.userData =  jwt.decode(this.AuthToken, this.config.password)
+        resolve(true)
+      } else {
+        this.storage.getItem('auth')
+        .then(
+          data => { this.useCredentials(data) },
+          error => { resolve(false) }
+        )
+        .then(() => {
+          this.userData =  jwt.decode(this.AuthToken, this.config.password)
+          resolve(true)
+        })
+      }
+    })
   }
 
   destroyUserCredentials():void {
     this.AuthToken = null;
+    this.loggedIn = false;
     this.storage.clear();
     window.localStorage.clear();
   }
 
-  chkLoggedIn():boolean {
-    let token = this.loadUserCredentials()
-    if (token) {
-      return true;
-    } else {
-      return false;
-    }
+  chkLoggedIn():Promise<boolean> {
+    return new Promise(resolve => {
+      this.loadUserCredentials().then(chk => {
+        if(chk) {
+          this.loggedIn = true;
+        } else {
+          this.loggedIn = false;
+        }
+      })
+    })
   }
 
   authenticate(user:UserAuth): Promise<boolean> {
@@ -82,11 +100,10 @@ export class AuthProvider {
 
         console.log(this.config.backServerHost)
         return new Promise(resolve => {
-            this.http.post(this.config.backServerHost + '/auth/local',
+            this.http.post('/auth/local',
             creds, {headers: headers}).subscribe(data => {
                 console.log(data.json());
                 if(data.json().success){
-                    console.log(data.json().msg)
                     this.storeUserCredentials(data.json().token);
                     resolve(true);
                 }
@@ -105,7 +122,7 @@ export class AuthProvider {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         return new Promise(resolve => {
-            this.http.post(this.config.backServerHost + '/auth/local/register',
+            this.http.post('/auth/local/register',
                 creds, {headers: headers}).subscribe(data => {
                 if(data.json().success){
                     resolve(true);
@@ -116,13 +133,9 @@ export class AuthProvider {
         });
   }
 
-  getinfo():UserData {
-        let encodedInfo = this.loadUserCredentials();
-        let decodedInfo = jwt.decode(encodedInfo, this.config.password);
-        return decodedInfo;
-  }
 
   logout():void {
         this.destroyUserCredentials();
   }
+
 }

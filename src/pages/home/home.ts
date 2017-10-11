@@ -19,9 +19,9 @@ export class HomePage {
               public authservice: AuthProvider,
               public alertCtrl:AlertController) {
 
-    if(this.authservice.chkLoggedIn()) {
-        this.nav.setRoot(UserPage)
-    }
+  this.authservice.chkLoggedIn().then(chk => {
+    if(chk) { this.nav.setRoot(UserPage) }
+  })
 
     this.user = {
       email:'',
@@ -32,13 +32,15 @@ export class HomePage {
   login(user:UserAuth){
     this.authservice.authenticate(user).then(data => {
       if (data) {
-        // const alert = this.alertCtrl.create({
-        //   title: 'Log-in Successfully',
-        //   subTitle: 'Welcome !!',
-        //   buttons: ['OK']
-        // });
-        // alert.present();
-        this.nav.push(UserPage)
+        const alert = this.alertCtrl.create({
+          title: 'Log-in Successfully',
+          subTitle: 'Welcome !!',
+          buttons: ['OK']
+        });
+        this.authservice.loadUserCredentials().then(() => {
+         this.nav.setRoot(UserPage);
+        })
+        alert.present();
       } else {
         const alert = this.alertCtrl.create({
           title: 'Log-in Failed',
@@ -53,4 +55,12 @@ export class HomePage {
   signup(){
     this.nav.push(SignUpPage);
   }
+  userPage(){
+    this.nav.push(UserPage);
+  }
+  // getInfo(){
+  //   this.authservice.loadUserCredentials().then(result => {
+  //     console.log(this.authservice.userData)
+  //   })
+  // }
 }

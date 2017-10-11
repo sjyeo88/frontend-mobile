@@ -38,10 +38,15 @@ export class UserPage {
 
   logout(): void {
     this.authservice.logout();
-    this.nav.setRoot(HomePage)
+    this.nav.setRoot(HomePage);
   }
 
-  getInfo(): void{
-    this.user = this.authservice.getinfo()
+  getInfo() {
+     this.authservice.loadUserCredentials().then(() => {
+       this.user = this.authservice.userData
+     })
+  }
+  testPromise(){
+      console.log(this.authservice.loadUserCredentials())
   }
 }
