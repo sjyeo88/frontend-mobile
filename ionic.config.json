@@ -8,7 +8,7 @@
   "proxies": [
     {
         "path": "/auth",
-        "proxyUrl": "http://182.162.104.243:3000/auth"
+        "proxyUrl": "https://restapt-test/auth"
     }
   ]
 }

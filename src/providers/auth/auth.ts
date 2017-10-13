@@ -112,7 +112,7 @@ export class AuthProvider {
             }
             this.http.post(apiUrl,
             creds, {headers: headers}).subscribe(data => {
-                console.log(data.json());
+                console.log(data.toString());
                 if(data.json().success){
                     this.storeUserCredentials(data.json().token);
                     resolve(true);
